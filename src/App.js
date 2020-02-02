@@ -1,8 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Navbar from './component/Navbar';
-import MediaCard from './component/MediaCard';
+import Navbar from './component/NavBar/Navbar';
+import CardList from './component/CardList/CardList';
 
 const houseToRent = [
   {
@@ -29,20 +29,42 @@ const houseToRent = [
     img: "https://specials-images.forbesimg.com/imageserve/1026205392/960x0.jpg?fit=scale",
     available: true
   },
+
 ]
 
-function App() {
-  return (
-    <div className="App">
-      <Navbar />
-      <div className="cards">
-        {houseToRent.map((element) => {
-          return (<MediaCard desc={element.desc} title={element.name} img={element.img} />)
+class App extends React.Component {
+  state = {
+    search: '',
+    houses: []
+  }
 
-        })}
-      </div>
-    </div>
-  );
+  componentDidMount() {
+    this.setState({
+      houses: houseToRent
+    })
+  }
+  onSearchChange = (event) => {
+    this.setState({
+      search: event.target.value
+    })
+  }
+
+
+  render() {
+    const { houses, search } = this.state;
+    const actualHouses = houses.filter(house => house.name.toLowerCase().includes(search.toLowerCase()))
+    return (
+      <div className="App" >
+        <Navbar
+          onSearchChange={this.onSearchChange}
+        />
+        {houses.length === 0 ? <h1>No result...</h1> : <h1>Here your houses</h1>}
+        <CardList
+          houses={actualHouses}
+        />
+      </div >
+    );
+  }
 }
 
 export default App;
